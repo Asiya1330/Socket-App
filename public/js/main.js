@@ -5,7 +5,7 @@ const userList = document.getElementById('users');
 
 // Get username and room from URL
 const { username, room } = Qs.parse(location.search, {
-  ignoreQueryPrefix: true,
+  ignoreQueryPrefix: true, //ignore & and ? symbols
 });
 
 const socket = io();
@@ -21,20 +21,18 @@ socket.on('roomUsers', ({ room, users }) => {
 
 // Message from server
 socket.on('message', (message) => {
-  console.log(message);
   outputMessage(message);
 
   // Scroll down
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+  chatMessages.scrollTop = chatMessages.scrollHeight; //bring scroll to bottom whenever new div append
 });
 
 // Message submit
 chatForm.addEventListener('submit', (e) => {
   e.preventDefault();
-
+  
   // Get message text
   let msg = e.target.elements.msg.value;
-
   msg = msg.trim();
 
   if (!msg) {
@@ -42,7 +40,7 @@ chatForm.addEventListener('submit', (e) => {
   }
 
   // Emit message to server
-  socket.emit('chatMessage', msg);
+  socket.emit('chatMessage', { username, msg, room });
 
   // Clear input
   e.target.elements.msg.value = '';
